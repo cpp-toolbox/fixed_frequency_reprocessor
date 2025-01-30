@@ -14,8 +14,8 @@ class FixedFrequencyReprocessor {
     std::vector<int> ids_to_process; ///< Vector of IDs that need to be processed.
     double period;                   ///< Time period (in seconds) between processing cycles, computed from frequency.
     std::unordered_map<int, double> id_to_delta_time;
-    std::function<void(int, double)> process_fun; ///< Function to process each ID.
-    std::function<void(int)> reprocess_fun;       ///< Function to reprocess IDs after a specific ID.
+    std::function<void(int, double, double)> process_fun; ///< Function to process each ID.
+    std::function<void(int)> reprocess_fun;               ///< Function to reprocess IDs after a specific ID.
     PeriodicSignal periodic_signal;
 
   public:
@@ -26,7 +26,8 @@ class FixedFrequencyReprocessor {
      * @param fun Function to process each ID.
      * @param re_fun Function to reprocess IDs after a specific ID.
      */
-    FixedFrequencyReprocessor(int frequency, std::function<void(int, double)> fun, std::function<void(int)> re_fun);
+    FixedFrequencyReprocessor(int frequency, std::function<void(int, double, bool)> process_fun,
+                              std::function<void(int)> re_fun);
 
     /**
      * @brief Adds an ID to the list of IDs to be processed.

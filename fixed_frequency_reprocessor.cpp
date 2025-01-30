@@ -1,8 +1,8 @@
 #include "fixed_frequency_reprocessor.hpp"
 
-FixedFrequencyReprocessor::FixedFrequencyReprocessor(int frequency, std::function<void(int, double)> fun,
+FixedFrequencyReprocessor::FixedFrequencyReprocessor(int frequency, std::function<void(int, double, bool)> process_fun,
                                                      std::function<void(int)> re_fun)
-    : process_fun(fun), reprocess_fun(re_fun), periodic_signal(frequency) {
+    : process_fun(process_fun), reprocess_fun(re_fun), periodic_signal(frequency) {
     // Compute the period from frequency (time interval between each processing cycle)
     period = 1.0 / frequency;
 }
@@ -14,7 +14,7 @@ bool FixedFrequencyReprocessor::attempt_to_process() {
         for (int id : ids_to_process) {
             double dt = periodic_signal.get_last_delta_time();
             id_to_delta_time[id] = dt;
-            process_fun(id, dt);
+            process_fun(id, dt, false);
             processed_ids.push_back(id);
         }
         ids_to_process.clear();
@@ -53,7 +53,7 @@ void FixedFrequencyReprocessor::re_process_after_id(int id) {
 
     for (const auto &processed_id : processed_ids) {
         if (processed_id > id) {
-            process_fun(processed_id, id_to_delta_time[processed_id]);
+            process_fun(processed_id, id_to_delta_time[processed_id], true);
         }
     }
     std::cout << "Reprocessing done" << std::endl;
