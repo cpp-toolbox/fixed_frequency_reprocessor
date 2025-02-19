@@ -2,7 +2,7 @@
 
 FixedFrequencyReprocessor::FixedFrequencyReprocessor(int frequency, std::function<void(int, double, bool)> process_fun,
                                                      std::function<void(int)> re_fun)
-    : process_fun(process_fun), reprocess_fun(re_fun), periodic_signal(frequency) {
+    : process_fun(process_fun), reprocess_fun(re_fun), periodic_signal(frequency, OperationMode::MEASURED_DELTAS) {
     // Compute the period from frequency (time interval between each processing cycle)
     period = 1.0 / frequency;
 }
